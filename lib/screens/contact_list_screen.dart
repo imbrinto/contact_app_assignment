@@ -1,4 +1,6 @@
 import 'package:contact_app_assignment/entities/entity.dart';
+import 'package:contact_app_assignment/ui/widgets/delete_diolog_box.dart';
+import 'package:contact_app_assignment/ui/widgets/form_widget.dart';
 import 'package:flutter/material.dart';
 
 class ContactListScreen extends StatefulWidget {
@@ -28,54 +30,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _nameTEController,
-                      validator: (String? value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter a valid input';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        hintText: 'Contact Name',
-                        labelText: 'Contact Name',
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextFormField(
-                      controller: _numberTEController,
-                      keyboardType: TextInputType.number,
-                      validator: (String? value) {
-                        if (value == null || value.trim().isEmpty) {
-                          return 'Please enter a valid input';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                        hintText: 'Contact Number',
-                        labelText: 'Contact Number',
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _addNewContact();
-                            _nameTEController.clear();
-                            _numberTEController.clear();
-                          }
-                        },
-                        child: const Text('Add to Contacts'))
-                  ],
-                )),
+            FormWidget(formKey: _formKey, nameController: _nameTEController, numberController: _numberTEController, addNewContact: _addNewContact, contactList: contactList),
             const SizedBox(height: 20),
             ListView.builder(
               shrinkWrap: true,
@@ -87,21 +42,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                   elevation: 3,
                   child: GestureDetector(
                     onLongPress: (){
-                      showDialog(context: context, builder: (context){
-                        return AlertDialog(
-                          title: const Text('Confirmation'),
-                          content: const Text('Are you sure for Delete?'),
-                          actions: [
-                            IconButton(onPressed: (){
-                              _deleteContact(index);
-                              Navigator.pop(context);
-                            }, icon: const Icon(Icons.delete,color: Colors.cyanAccent,),),
-                            IconButton(onPressed: (){
-                              Navigator.pop(context);
-                            }, icon: const Icon(Icons.cancel,color: Colors.cyanAccent,),),
-                          ],
-                        );
-                      });
+                      deleteAlertdialogBox(context, _deleteContact, index);
                     },
                     child: ListTile(
                       leading: const Icon(
@@ -148,3 +89,4 @@ class _ContactListScreenState extends State<ContactListScreen> {
     _nameTEController.dispose();
   }
 }
+
